@@ -1,35 +1,20 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import './App.scss';
 import { peopleFromServer } from './data/people';
 import { Person } from './types/Person';
 import { Dropdown } from './components/Dropdown/Dropdown';
-import debounce from 'lodash.debounce';
 
 export const App: React.FC = () => {
   const people: Person[] = [...peopleFromServer];
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
-  const [query, setQuery] = useState('');
   const [appliedQuery, setAppliedQuery] = useState('');
   const [isDropdownActive, setIsDropdownActive] = useState(false);
-  const field = useRef<HTMLInputElement>(null);
   const [isChanged, setIsChanged] = useState(false);
-  const [delay, setDelay] = useState(1000);
-
-  const applyQuery = useCallback(debounce(setAppliedQuery, 1000), [delay]);
-
-  const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-    applyQuery(event.target.value);
-  };
+  const delay = 300;
+  const field = useRef<HTMLInputElement>(null);
 
   const filteredPeople = useMemo(() => {
-    const normalizedQuery = query.toLowerCase().trim();
+    const normalizedQuery = appliedQuery.toLowerCase().trim();
 
     return people.filter(person =>
       person.name.toLowerCase().includes(normalizedQuery),
@@ -59,17 +44,14 @@ export const App: React.FC = () => {
         )}
 
         <Dropdown
-          handleQueryChange={handleQueryChange}
-          applyQuery={applyQuery}
           isDropdownActive={isDropdownActive}
           setIsDropdownActive={setIsDropdownActive}
-          setQuery={setQuery}
           field={field}
-          query={query}
           filteredPeople={filteredPeople}
           onSelected={onPersonSelect}
           setIsChanged={setIsChanged}
           delay={delay}
+          appliedQuery={appliedQuery}
           setAppliedQuery={setAppliedQuery}
         />
 

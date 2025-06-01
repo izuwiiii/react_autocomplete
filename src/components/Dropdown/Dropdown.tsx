@@ -6,32 +6,40 @@ import debounce from 'lodash.debounce';
 interface DropdownProps {
   isDropdownActive: boolean;
   setIsDropdownActive: (value: boolean) => void;
-  setQuery: React.Dispatch<React.SetStateAction<string>>;
   field: React.RefObject<HTMLInputElement>;
-  query: string;
   filteredPeople: Person[];
   onSelected: (person: Person) => void;
   setIsChanged: (value: boolean) => void;
   delay: number;
+  appliedQuery: string;
   setAppliedQuery: React.Dispatch<React.SetStateAction<string>>;
-  applyQuery: React.Dispatch<React.SetStateAction<string>>;
-  handleQueryChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
   isDropdownActive,
   setIsDropdownActive,
-  setQuery,
   field,
-  query,
   filteredPeople,
   onSelected,
   setIsChanged,
-  applyQuery,
   delay,
+  appliedQuery,
   setAppliedQuery,
-  handleQueryChange,
 }) => {
+  const applyQuery = useCallback(
+    debounce((value: string) => {
+      setAppliedQuery(value);
+    }, delay),
+    [delay],
+  );
+
+  const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value;
+    if (newValue !== appliedQuery) {
+      applyQuery(newValue);
+    }
+  };
+
   return (
     <div className={classNames('dropdown', { 'is-active': isDropdownActive })}>
       <div className="dropdown-trigger">
@@ -42,7 +50,6 @@ export const Dropdown: React.FC<DropdownProps> = ({
           data-cy="search-input"
           onFocus={() => setIsDropdownActive(true)}
           ref={field}
-          value={query}
           onChange={e => {
             handleQueryChange(e);
             setIsChanged(true);
