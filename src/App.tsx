@@ -1,4 +1,5 @@
 import React, {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -8,6 +9,7 @@ import './App.scss';
 import { peopleFromServer } from './data/people';
 import { Person } from './types/Person';
 import { Dropdown } from './components/Dropdown/Dropdown';
+import debounce from 'lodash.debounce';
 
 export const App: React.FC = () => {
   const people: Person[] = [...peopleFromServer];
@@ -17,7 +19,14 @@ export const App: React.FC = () => {
   const [isDropdownActive, setIsDropdownActive] = useState(false);
   const field = useRef<HTMLInputElement>(null);
   const [isChanged, setIsChanged] = useState(false);
-  const [delay, setDelay] = useState(300);
+  const [delay, setDelay] = useState(1000);
+
+  const applyQuery = useCallback(debounce(setAppliedQuery, 1000), [delay]);
+
+  const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(event.target.value);
+    applyQuery(event.target.value);
+  };
 
   const filteredPeople = useMemo(() => {
     const normalizedQuery = query.toLowerCase().trim();
@@ -50,6 +59,8 @@ export const App: React.FC = () => {
         )}
 
         <Dropdown
+          handleQueryChange={handleQueryChange}
+          applyQuery={applyQuery}
           isDropdownActive={isDropdownActive}
           setIsDropdownActive={setIsDropdownActive}
           setQuery={setQuery}

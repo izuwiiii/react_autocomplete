@@ -14,6 +14,8 @@ interface DropdownProps {
   setIsChanged: (value: boolean) => void;
   delay: number;
   setAppliedQuery: React.Dispatch<React.SetStateAction<string>>;
+  applyQuery: React.Dispatch<React.SetStateAction<string>>;
+  handleQueryChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const Dropdown: React.FC<DropdownProps> = ({
@@ -25,16 +27,11 @@ export const Dropdown: React.FC<DropdownProps> = ({
   filteredPeople,
   onSelected,
   setIsChanged,
+  applyQuery,
   delay,
   setAppliedQuery,
+  handleQueryChange,
 }) => {
-  const applyQuery = useCallback(debounce(setAppliedQuery, delay), []);
-
-  const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
-    applyQuery(event.target.value);
-  };
-
   return (
     <div className={classNames('dropdown', { 'is-active': isDropdownActive })}>
       <div className="dropdown-trigger">
