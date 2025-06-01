@@ -7,6 +7,7 @@ import { Dropdown } from './components/Dropdown/Dropdown';
 export const App: React.FC = () => {
   const people: Person[] = [...peopleFromServer];
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
+  const [inputValue, setInputValue] = useState('');
   const [appliedQuery, setAppliedQuery] = useState('');
   const [isDropdownActive, setIsDropdownActive] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
@@ -51,6 +52,8 @@ export const App: React.FC = () => {
           onSelected={onPersonSelect}
           setIsChanged={setIsChanged}
           delay={delay}
+          inputValue={inputValue}
+          setInputValue={setInputValue}
           appliedQuery={appliedQuery}
           setAppliedQuery={setAppliedQuery}
         />

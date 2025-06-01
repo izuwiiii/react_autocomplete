@@ -12,6 +12,8 @@ interface DropdownProps {
   setIsChanged: (value: boolean) => void;
   delay: number;
   appliedQuery: string;
+  inputValue: string;
+  setInputValue: React.Dispatch<React.SetStateAction<string>>;
   setAppliedQuery: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -23,9 +25,12 @@ export const Dropdown: React.FC<DropdownProps> = ({
   onSelected,
   setIsChanged,
   delay,
+  inputValue,
+  setInputValue,
   appliedQuery,
   setAppliedQuery,
 }) => {
+  console.log(inputValue);
   const applyQuery = useCallback(
     debounce((value: string) => {
       setAppliedQuery(value);
@@ -35,6 +40,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
+    setInputValue(newValue);
     if (newValue !== appliedQuery) {
       applyQuery(newValue);
     }
@@ -50,6 +56,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
           data-cy="search-input"
           onFocus={() => setIsDropdownActive(true)}
           ref={field}
+          value={inputValue}
           onChange={e => {
             handleQueryChange(e);
             setIsChanged(true);
@@ -67,6 +74,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
                   data-cy="suggestion-item"
                   onClick={() => {
                     onSelected(person);
+                    setInputValue(person.name);
+                    setAppliedQuery(person.name);
                     setIsChanged(false);
                   }}
                 >
