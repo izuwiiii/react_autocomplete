@@ -30,7 +30,6 @@ export const Dropdown: React.FC<DropdownProps> = ({
   appliedQuery,
   setAppliedQuery,
 }) => {
-  console.log(inputValue);
   const applyQuery = useCallback(
     debounce((value: string) => {
       setAppliedQuery(value);
